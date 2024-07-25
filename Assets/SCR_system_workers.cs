@@ -1,18 +1,21 @@
 using System.Collections;
 using System.Collections.Generic;
+using Unity.Entities;
+using Unity.Mathematics;
+using Unity.Transforms;
 using UnityEngine;
 
-public class SCR_system_workers : MonoBehaviour
+public partial struct SCR_system_workers : ISystem
 {
-    // Start is called before the first frame update
-    void Start()
+    void OnUpdate(ref SystemState state)
     {
-        
-    }
+        foreach (var (transform, worker) in SystemAPI.Query<RefRW<LocalTransform>, RefRO<SCR_component_worker>>())
+        {
+            float3 pos = transform.ValueRO.Position;
+            pos += new float3(1, 0, 0) * Time.deltaTime;
+            transform.ValueRW.Position = pos;
 
-    // Update is called once per frame
-    void Update()
-    {
-        
+            //Note for future James - Consider giving the worker a tag when they are holding something
+        }
     }
 }

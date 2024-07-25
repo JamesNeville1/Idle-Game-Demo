@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using Unity.Entities;
+using Unity.VisualScripting;
 using UnityEngine;
 
 public class SCR_manager_main : MonoBehaviour
@@ -10,10 +11,13 @@ public class SCR_manager_main : MonoBehaviour
     private int workerCarryingCapacity;
 
     private EntityManager entityManager;
+    private SCR_component_spawner spawner;
 
-    [SerializeField] private Entity workerRef;
+    [SerializeField] private GameObject workerPrefab;
     [SerializeField] private Transform haulLineBegin;
     [SerializeField] private Transform haulLineEnd;
+
+    public bool shouldSpawnWorker;
 
     public static SCR_manager_main instance { get; private set; }
     private void Awake()
@@ -21,21 +25,6 @@ public class SCR_manager_main : MonoBehaviour
         instance = this;
 
         entityManager = World.DefaultGameObjectInjectionWorld.EntityManager;
-    }
-
-    private void Start()
-    {
-        var entities = entityManager.GetAllEntities();
-        foreach (var entity in entities)
-        {
-            if (entityManager.HasComponent<SCR_component_worker>(entity) == true)
-            {
-                workerRef = entity;
-                break;
-            }
-        }
-
-        print(workerRef);
     }
 
     public int GetMoney()
@@ -58,13 +47,21 @@ public class SCR_manager_main : MonoBehaviour
         return workerCarryingCapacity;
     }
 
-    public void CreateWorkerEntity()
+    public void TriggerSpawnWorkerEntity()
     {
         //Vector2 pos = new Vector2 (Random.Range(haulLineBegin.position.x, haulLineEnd.position.x), 0);
         //Instantiate(workerPrefab, pos, Quaternion.identity);
 
-        Entity worker = entityManager.Instantiate(workerRef);
+        //Entity worker = entityManager.Instantiate(workerRef);
 
-        entityManager.RemoveComponent<Disabled>(worker);
+        //entityManager.RemoveComponent<Disabled>(worker);
+
+        //GetEntity(workerPrefab);
+
+        //var ecb = SystemAPI.GetSingleton<BeginFixedStepSimulationEntityCommandBufferSystem.Singleton>().CreateCommandBuffer(State.)
+
+        //entityManager.CreateEntity(spawner.workerEntity);
+
+        shouldSpawnWorker = true;
     }
 }
