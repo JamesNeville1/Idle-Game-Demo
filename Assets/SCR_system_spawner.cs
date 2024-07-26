@@ -15,9 +15,10 @@ public partial struct SCR_system_spawner : ISystem
                 var ecb =
                     SystemAPI.GetSingleton<BeginFixedStepSimulationEntityCommandBufferSystem.Singleton>().CreateCommandBuffer(state.WorldUnmanaged);
 
-                ecb.Instantiate(spawner.Item1.ValueRO.workerEntity);
+                Entity worker = ecb.Instantiate(spawner.Item1.ValueRO.workerEntity);
+                ecb.AddComponent(worker, new SCR_component_worker_collecting { });
 
-                Debug.Log("AAAAAAAAAAAAAAA");
+                Debug.Log("Log: Worker Summoned");
                 SCR_manager_main.instance.shouldSpawnWorker = false;
             }
         }

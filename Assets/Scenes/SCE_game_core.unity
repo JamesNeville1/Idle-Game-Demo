@@ -815,6 +815,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8d9bef10b245dc1459ab6e37e7823aa0, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  money: 0
+  workerSpeed: 1
+  workerCarryingCapacity: 1
   workerPrefab: {fileID: 0}
   haulLineBegin: {fileID: 216449124}
   haulLineEnd: {fileID: 552143531}

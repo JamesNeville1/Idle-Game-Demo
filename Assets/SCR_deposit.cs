@@ -4,7 +4,12 @@ using UnityEngine;
 
 public class SCR_deposit : MonoBehaviour
 {
-    public void Give(SCR_component_worker worker)
+    public static SCR_deposit instance { private set; get; }
+    private void Awake()
+    {
+        instance = this;
+    }
+    public void Give(ref SCR_component_worker worker)
     {
         int resource = worker.heldItem;
         worker.heldItem = 0;

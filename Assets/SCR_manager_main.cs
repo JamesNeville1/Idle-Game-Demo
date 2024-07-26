@@ -6,9 +6,9 @@ using UnityEngine;
 
 public class SCR_manager_main : MonoBehaviour
 {
-    private int money;
-    private float workerSpeed;
-    private int workerCarryingCapacity;
+    [SerializeField] private int money;
+    [SerializeField] private float workerSpeed = 1;
+    [SerializeField] private int workerCarryingCapacity = 1;
 
     private EntityManager entityManager;
     private SCR_component_spawner spawner;
@@ -62,6 +62,6 @@ public class SCR_manager_main : MonoBehaviour
 
         //entityManager.CreateEntity(spawner.workerEntity);
 
-        shouldSpawnWorker = true;
+        shouldSpawnWorker = true; //I hate this
     }
 }

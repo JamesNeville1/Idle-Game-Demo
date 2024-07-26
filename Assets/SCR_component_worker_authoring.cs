@@ -20,3 +20,13 @@ public struct SCR_component_worker : IComponentData
 {
     public int heldItem;
 }
+
+public struct SCR_component_worker_hauling : IComponentData
+{
+
+}
+
+public struct SCR_component_worker_collecting : IComponentData
+{
+
+}
