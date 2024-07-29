@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using Unity.Burst;
@@ -6,43 +7,52 @@ using Unity.Entities;
 using Unity.Jobs;
 using Unity.Mathematics;
 using Unity.Transforms;
-using UnityEngine;
 
-public partial struct SCR_system_workers : ISystem
+public partial class SCR_system_workers : SystemBase
 {
-    void OnUpdate(ref SystemState state)
+    [BurstCompile]
+    protected override void OnUpdate()
     {
-        WorkerMoveJob workerMoveJob = new WorkerMoveJob 
+        //NativeArray<int> soldResource = new NativeArray<int>(1, Allocator.TempJob);
+        var workerMoveJob = new WorkerMoveJob()
         {
             deltaTime = SystemAPI.Time.DeltaTime * 15,
             sourceX = SCR_source.instance.transform.position.x,
             depositX = SCR_deposit.instance.transform.position.x,
-            workerSpeed = SCR_manager_main.instance.GetWorkerSpeed()
+            speed = SCR_manager_main.instance.GetWorkerSpeed(),
+            carryCap = SCR_manager_main.instance.GetWorkerCarryingCapacity(),
+            soldResource = new NativeArray<int>(1, Allocator.TempJob)
         };
-        workerMoveJob.Schedule();
+        JobHandle jobHandle = workerMoveJob.Schedule(this.Dependency);
+        jobHandle.Complete();
+
+        SCR_manager_main.instance.Sell(workerMoveJob.soldResource[0]);
     }
 
-
-    public partial struct WorkerMoveJob : IJobEntity
+    [BurstCompile(CompileSynchronously = true)]
+    public partial struct WorkerMoveJob : IJobEntity 
     {
 
         public float deltaTime;
         public float sourceX;
         public float depositX;
-        public float workerSpeed;
+        public float speed;
+        public int carryCap;
 
+        public NativeArray<int> soldResource;
+        [BurstCompile]
         public void Execute(ref LocalTransform transform, ref SCR_component_worker worker)
         {
-            float3 step = new float3(workerSpeed, 0, 0) * deltaTime;
+            float3 step = new float3(speed, 0, 0) * deltaTime; 
             if (worker.heldItem <= 0)
             {
-                transform.Position += step;
+                transform.Position += step; 
 
                 if (math.abs(sourceX - transform.Position.x) <= 2.5f)
                 {
-                    SCR_source.instance.Take(ref worker);
-                }
-            }
+                    worker.heldItem = carryCap;  
+                } 
+            } 
             if (worker.heldItem > 0)
             {
 
@@ -50,7 +60,8 @@ public partial struct SCR_system_workers : ISystem
 
                 if (math.abs(depositX - transform.Position.x) <= 2.5f)
                 {
-                    SCR_deposit.instance.Give(ref worker);
+                    soldResource[0] += worker.heldItem; 
+                    worker.heldItem = 0;
                 }
             }
 

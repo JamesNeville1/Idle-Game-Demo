@@ -817,7 +817,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   money: 0
   workerSpeed: 1
-  workerCarryingCapacity: 1
+  workerCarryingCapacity: 10
   workerPrefab: {fileID: 0}
   haulLineBegin: {fileID: 216449124}
   haulLineEnd: {fileID: 552143531}

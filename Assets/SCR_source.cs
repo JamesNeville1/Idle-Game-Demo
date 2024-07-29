@@ -10,8 +10,4 @@ public class SCR_source : MonoBehaviour
     {
         instance = this;
     }
-    public void Take(ref SCR_component_worker worker)
-    {
-        worker.heldItem = SCR_manager_main.instance.GetWorkerCarryingCapacity();
-    }
 }

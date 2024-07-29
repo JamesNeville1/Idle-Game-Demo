@@ -19,7 +19,7 @@ public class SCR_manager_main : MonoBehaviour
 
     public bool shouldSpawnWorker;
 
-    public static SCR_manager_main instance { get; private set; }
+    public static SCR_manager_main instance;
     private void Awake()
     {
         instance = this;
