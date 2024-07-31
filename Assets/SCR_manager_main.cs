@@ -1,18 +1,30 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.Transactions;
+using TMPro;
 using Unity.Entities;
 using Unity.VisualScripting;
 using UnityEngine;
 
 public class SCR_manager_main : MonoBehaviour
 {
+    [System.Serializable] public struct statStruct
+    {
+        public int statCurrent;
+        public int initialPrice;
+        public int increaseRate;
+        public int n;
+    }
+
     [SerializeField] private int money;
-    [SerializeField] private float workerSpeed = 1;
-    [SerializeField] private int workerCarryingCapacity = 1;
+    [SerializeField] private float deltaTimeModif;
 
-    private EntityManager entityManager;
-    private SCR_component_spawner spawner;
+    [Header("Stats")]
+    [SerializeField] private statStruct worker;
+    [SerializeField] private statStruct workerSpeed;
+    [SerializeField] private statStruct workerStrength;
 
+    [Header("World Refs")]
     [SerializeField] private GameObject workerPrefab;
     [SerializeField] private Transform haulLineBegin;
     [SerializeField] private Transform haulLineEnd;
@@ -24,7 +36,21 @@ public class SCR_manager_main : MonoBehaviour
     {
         instance = this;
 
-        entityManager = World.DefaultGameObjectInjectionWorld.EntityManager;
+        //entityManager = World.DefaultGameObjectInjectionWorld.EntityManager;
+    }
+
+    private void Start()
+    {
+        //Show intial prices
+        DisplayInitialPrice(SCR_manager_ui.instance.GetWorkerCostText(), worker); 
+        DisplayInitialPrice(SCR_manager_ui.instance.GetWorkerSpeedCostText(), workerSpeed);
+        DisplayInitialPrice(SCR_manager_ui.instance.GetWorkerStrengthCostText(), workerStrength);
+    }
+
+    private void DisplayInitialPrice(TextMeshProUGUI display, statStruct stat)
+    {
+        int cost = CalculatePolynominalCost(stat);
+        display.text = "$" + cost.ToString();
     }
 
     public int GetMoney()
@@ -32,36 +58,66 @@ public class SCR_manager_main : MonoBehaviour
         return money;
     }
 
+    public float GetDeltaTimeModif()
+    {
+        return deltaTimeModif;
+    }
+
     public void Sell(int resource)
     {
         money += resource; //Change Later
+        SCR_manager_ui.instance.UpdateMoneyDisplay(money);
     }
 
     public float GetWorkerSpeed()
     {
-        return workerSpeed;
+        return workerSpeed.statCurrent;
     }
 
-    public int GetWorkerCarryingCapacity()
+    public int GetWorkerStrength()
     {
-        return workerCarryingCapacity;
+        return workerStrength.statCurrent;
     }
 
-    public void TriggerSpawnWorkerEntity()
+    private bool CheckCost(int cost)
     {
-        //Vector2 pos = new Vector2 (Random.Range(haulLineBegin.position.x, haulLineEnd.position.x), 0);
-        //Instantiate(workerPrefab, pos, Quaternion.identity);
+        return (money >= cost);
+    }
+    private int CalculatePolynominalCost(statStruct stat) //Add multiplier pram later
+    {
+        return stat.initialPrice + stat.increaseRate * (int)Mathf.Pow(stat.n, 2);
+    }
+    private void Transaction(TextMeshProUGUI costDisplay, int cost, ref statStruct stat)
+    {
+        money -= cost;
+        stat.n++;
+        costDisplay.text = "$" + CalculatePolynominalCost(stat).ToString();
+        stat.statCurrent++;
+    }
+    public void BuyWorker()
+    {
+        int cost = CalculatePolynominalCost(worker);
+        if (CheckCost(cost))
+        {
+            shouldSpawnWorker = true; //I hate this
 
-        //Entity worker = entityManager.Instantiate(workerRef);
-
-        //entityManager.RemoveComponent<Disabled>(worker);
-
-        //GetEntity(workerPrefab);
-
-        //var ecb = SystemAPI.GetSingleton<BeginFixedStepSimulationEntityCommandBufferSystem.Singleton>().CreateCommandBuffer(State.)
-
-        //entityManager.CreateEntity(spawner.workerEntity);
-
-        shouldSpawnWorker = true; //I hate this
+            Transaction(SCR_manager_ui.instance.GetWorkerCostText(), cost, ref worker);
+        }
+    }
+    public void BuyWorkerStrength()
+    {
+        int cost = CalculatePolynominalCost(workerStrength);
+        if (CheckCost(cost))
+        {
+            Transaction(SCR_manager_ui.instance.GetWorkerStrengthCostText(), cost, ref workerStrength);
+        }
+    }
+    public void BuyWorkerSpeed()
+    {
+        int cost = CalculatePolynominalCost(workerSpeed);
+        if (CheckCost(cost))
+        {
+            Transaction(SCR_manager_ui.instance.GetWorkerSpeedCostText(), cost, ref workerSpeed);
+        }
     }
 }

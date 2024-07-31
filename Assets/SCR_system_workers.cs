@@ -17,11 +17,11 @@ public partial class SCR_system_workers : SystemBase
         //NativeArray<int> soldResource = new NativeArray<int>(1, Allocator.TempJob);
         var workerMoveJob = new WorkerMoveJob()
         {
-            deltaTime = SystemAPI.Time.DeltaTime * 15,
+            deltaTime = SystemAPI.Time.DeltaTime * SCR_manager_main.instance.GetDeltaTimeModif() * SCR_manager_main.instance.GetWorkerSpeed(),
             sourceX = SCR_source.instance.transform.position.x,
             depositX = SCR_deposit.instance.transform.position.x,
             speed = SCR_manager_main.instance.GetWorkerSpeed(),
-            carryCap = SCR_manager_main.instance.GetWorkerCarryingCapacity(),
+            carryCap = SCR_manager_main.instance.GetWorkerStrength(),
             soldResource = new NativeArray<int>(1, Allocator.TempJob)
         };
         JobHandle jobHandle = workerMoveJob.Schedule(this.Dependency);
