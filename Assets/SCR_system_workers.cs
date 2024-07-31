@@ -8,6 +8,7 @@ using Unity.Jobs;
 using Unity.Mathematics;
 using Unity.Transforms;
 
+[BurstCompile(CompileSynchronously = true)]
 public partial class SCR_system_workers : SystemBase
 {
     [BurstCompile]
@@ -39,7 +40,7 @@ public partial class SCR_system_workers : SystemBase
         public float speed;
         public int carryCap;
 
-        public NativeArray<int> soldResource;
+        public NativeArray<int> soldResource; 
         [BurstCompile]
         public void Execute(ref LocalTransform transform, ref SCR_component_worker worker)
         {
