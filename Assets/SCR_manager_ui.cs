@@ -8,9 +8,15 @@ public class SCR_manager_ui : MonoBehaviour
 {
     [SerializeField] private TextMeshProUGUI moneyDisplay;
 
-    [SerializeField] private TextMeshProUGUI workerCostText;
-    [SerializeField] private TextMeshProUGUI workerStrengthCostText;
-    [SerializeField] private TextMeshProUGUI workerSpeedCostText;
+    [System.Serializable] public struct infoPannelTextStruct
+    {
+        public TextMeshProUGUI costText;
+        public TextMeshProUGUI currentStatText;
+    }
+
+    [SerializeField] private infoPannelTextStruct workerText;
+    [SerializeField] private infoPannelTextStruct workerStrengthText;
+    [SerializeField] private infoPannelTextStruct workerSpeedText;
 
     public static SCR_manager_ui instance { get; private set; }
     private void Awake()
@@ -23,7 +29,7 @@ public class SCR_manager_ui : MonoBehaviour
         moneyDisplay.text = "$" + raw.ToString();
     }
 
-    public TextMeshProUGUI GetWorkerCostText() { return workerCostText; }
-    public TextMeshProUGUI GetWorkerStrengthCostText() { return workerStrengthCostText; }
-    public TextMeshProUGUI GetWorkerSpeedCostText() { return workerSpeedCostText; }
+    public infoPannelTextStruct GetWorkerTexts() { return workerText; }
+    public infoPannelTextStruct GetWorkerStrengthTexts() { return workerStrengthText; }
+    public infoPannelTextStruct GetWorkerSpeedTexts() { return workerSpeedText; }
 }

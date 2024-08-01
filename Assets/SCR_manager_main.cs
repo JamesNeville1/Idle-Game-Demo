@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Transactions;
@@ -14,14 +15,18 @@ public class SCR_manager_main : MonoBehaviour
         public int initialPrice;
         public int increaseRate;
         public int n;
+        public bool hasMaxN;
+        public int maxN;
     }
 
     [SerializeField] private int money;
     [SerializeField] private float deltaTimeModif;
+    [SerializeField] private float workerDistanceOffset;
 
     [Header("Stats")]
     [SerializeField] private statStruct worker;
     [SerializeField] private statStruct workerSpeed;
+    [SerializeField] private float workerSpeedModif;
     [SerializeField] private statStruct workerStrength;
 
     [Header("World Refs")]
@@ -29,7 +34,7 @@ public class SCR_manager_main : MonoBehaviour
     [SerializeField] private Transform haulLineBegin;
     [SerializeField] private Transform haulLineEnd;
 
-    public bool shouldSpawnWorker;
+    [HideInInspector] public bool shouldSpawnWorker;
 
     public static SCR_manager_main instance;
     private void Awake()
@@ -42,9 +47,19 @@ public class SCR_manager_main : MonoBehaviour
     private void Start()
     {
         //Show intial prices
-        DisplayInitialPrice(SCR_manager_ui.instance.GetWorkerCostText(), worker); 
-        DisplayInitialPrice(SCR_manager_ui.instance.GetWorkerSpeedCostText(), workerSpeed);
-        DisplayInitialPrice(SCR_manager_ui.instance.GetWorkerStrengthCostText(), workerStrength);
+        DisplayInitialPrice(SCR_manager_ui.instance.GetWorkerTexts().costText, worker); 
+        DisplayInitialPrice(SCR_manager_ui.instance.GetWorkerSpeedTexts().costText, workerSpeed);
+        DisplayInitialPrice(SCR_manager_ui.instance.GetWorkerStrengthTexts().costText, workerStrength);
+
+        SCR_manager_ui.instance.GetWorkerTexts().currentStatText.text = worker.statCurrent.ToString();
+        SCR_manager_ui.instance.GetWorkerSpeedTexts().currentStatText.text = DisplaySpeed();
+        SCR_manager_ui.instance.GetWorkerStrengthTexts().currentStatText.text = workerStrength.statCurrent.ToString();
+    }
+
+    private string DisplaySpeed()
+    {
+        float speed = workerSpeed.statCurrent * workerSpeedModif + 1;
+        return speed.ToString() + "/mph";
     }
 
     private void DisplayInitialPrice(TextMeshProUGUI display, statStruct stat)
@@ -56,6 +71,11 @@ public class SCR_manager_main : MonoBehaviour
     public int GetMoney()
     {
         return money;
+    }
+
+    public float GetWorkerDistanceOffset()
+    {
+        return workerDistanceOffset;
     }
 
     public float GetDeltaTimeModif()
@@ -71,7 +91,7 @@ public class SCR_manager_main : MonoBehaviour
 
     public float GetWorkerSpeed()
     {
-        return workerSpeed.statCurrent;
+        return workerSpeed.statCurrent * workerSpeedModif;
     }
 
     public int GetWorkerStrength()
@@ -79,45 +99,61 @@ public class SCR_manager_main : MonoBehaviour
         return workerStrength.statCurrent;
     }
 
-    private bool CheckCost(int cost)
+    private bool CheckCost(int cost, statStruct stat)
     {
-        return (money >= cost);
+        bool atMax = false;
+        if (stat.hasMaxN)
+        {
+            if(stat.n + 1 > stat.maxN) 
+            { 
+                atMax = true;
+            }
+        }
+
+        return (money >= cost && !atMax);
     }
     private int CalculatePolynominalCost(statStruct stat) //Add multiplier pram later
     {
         return stat.initialPrice + stat.increaseRate * (int)Mathf.Pow(stat.n, 2);
     }
-    private void Transaction(TextMeshProUGUI costDisplay, int cost, ref statStruct stat)
+    private void Transaction(SCR_manager_ui.infoPannelTextStruct display, int cost, ref statStruct stat)
     {
         money -= cost;
         stat.n++;
-        costDisplay.text = "$" + CalculatePolynominalCost(stat).ToString();
+        display.costText.text = "$" + CalculatePolynominalCost(stat).ToString();
         stat.statCurrent++;
+        display.currentStatText.text = (stat.statCurrent).ToString();
     }
     public void BuyWorker()
     {
         int cost = CalculatePolynominalCost(worker);
-        if (CheckCost(cost))
+        if (CheckCost(cost, worker))
         {
             shouldSpawnWorker = true; //I hate this
 
-            Transaction(SCR_manager_ui.instance.GetWorkerCostText(), cost, ref worker);
+            Transaction(SCR_manager_ui.instance.GetWorkerTexts(), cost, ref worker);
+
+            SCR_manager_ui.instance.GetWorkerTexts().currentStatText.text = worker.statCurrent.ToString();
         }
     }
     public void BuyWorkerStrength()
     {
         int cost = CalculatePolynominalCost(workerStrength);
-        if (CheckCost(cost))
+        if (CheckCost(cost, workerStrength))
         {
-            Transaction(SCR_manager_ui.instance.GetWorkerStrengthCostText(), cost, ref workerStrength);
+            Transaction(SCR_manager_ui.instance.GetWorkerStrengthTexts(), cost, ref workerStrength);
+
+            SCR_manager_ui.instance.GetWorkerStrengthTexts().currentStatText.text = workerStrength.statCurrent.ToString();
         }
     }
     public void BuyWorkerSpeed()
     {
         int cost = CalculatePolynominalCost(workerSpeed);
-        if (CheckCost(cost))
+        if (CheckCost(cost, workerSpeed))
         {
-            Transaction(SCR_manager_ui.instance.GetWorkerSpeedCostText(), cost, ref workerSpeed);
+            Transaction(SCR_manager_ui.instance.GetWorkerSpeedTexts(), cost, ref workerSpeed);
+
+            SCR_manager_ui.instance.GetWorkerSpeedTexts().currentStatText.text = DisplaySpeed();
         }
     }
 }
