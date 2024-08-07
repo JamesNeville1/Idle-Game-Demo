@@ -25,6 +25,7 @@ public class SCR_source : MonoBehaviour
         if(Input.GetMouseButtonDown(0) && canManualClick)
         {
             SCR_manager_main.instance.Sell(SCR_manager_main.instance.GetWorkerStrength());
+
             StartCoroutine(ManualClickCooldown());
             //Play SFX
         }

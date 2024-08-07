@@ -1,11 +1,13 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Drawing;
 using Unity.Burst;
 using Unity.Collections;
 using Unity.Entities;
 using Unity.Jobs;
 using Unity.Mathematics;
+using Unity.Rendering;
 using Unity.Transforms;
 
 [BurstCompile(CompileSynchronously = true)]
@@ -28,7 +30,7 @@ public partial class SCR_system_workers : SystemBase
         JobHandle jobHandle = workerMoveJob.Schedule(this.Dependency);
         jobHandle.Complete();
 
-        SCR_manager_main.instance.Sell(workerMoveJob.soldResource[0]);
+        if (workerMoveJob.soldResource[0] > 0) SCR_manager_main.instance.Sell(workerMoveJob.soldResource[0]);
     }
 
     [BurstCompile(CompileSynchronously = true)]
@@ -46,17 +48,19 @@ public partial class SCR_system_workers : SystemBase
         [BurstCompile]
         public void Execute(ref LocalTransform transform, ref SCR_component_worker worker)
         {
-            float3 step = new float3(speed, 0, 0) * deltaTime; 
-            if (worker.heldItem <= 0)
-            {
-                transform.Position += step; 
+            float3 step = new float3(speed, 0, 0) * deltaTime;
 
+            if (worker.heldItem <= 0) //Move Towards Supply
+            {
+                transform.Position += step;
                 if (transform.Position.x > sourceX - workerDistanceOffset)
                 {
-                    worker.heldItem = carryCap;  
+                    worker.heldItem = carryCap;
+                    //transform.Rotation.value = transform.RotateY(180).Rotation.value;
                 } 
             } 
-            if (worker.heldItem > 0)
+
+            if (worker.heldItem > 0) //Move Towards Deposit
             {
 
                 transform.Position -= step;
@@ -65,6 +69,7 @@ public partial class SCR_system_workers : SystemBase
                 {
                     soldResource[0] += worker.heldItem; 
                     worker.heldItem = 0;
+                    //transform.Rotation.value = transform.RotateY(-180).Rotation.value;
                 }
             }
 

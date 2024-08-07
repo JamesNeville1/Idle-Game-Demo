@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using Unity.Entities;
 using Unity.Mathematics;
+using Unity.Rendering;
 using Unity.Transforms;
 using UnityEngine;
 
@@ -23,6 +24,7 @@ public partial struct SCR_system_spawner : ISystem
                     Scale = 1,
                     Rotation = new quaternion(0, 0, 0, 1)
                 });
+                //ecb.AddComponent(worker, new URPMaterialPropertyBaseColor { Value = new float4(0, 0, 1, 1) });
                 //ecb.SetComponent(worker, new SpriteRenderer() { color = Color.red });
                 //ecb.AddComponent(worker, new SCR_component_worker_collecting { });
 

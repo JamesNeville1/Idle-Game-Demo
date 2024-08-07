@@ -87,6 +87,7 @@ public class SCR_manager_main : MonoBehaviour
     {
         money += resource; //Change Later
         SCR_manager_ui.instance.UpdateMoneyDisplay(money);
+        SCR_master_audio.instance.playRandomEffect("MONEY_MADE");
     }
 
     public float GetWorkerSpeed()
@@ -123,6 +124,7 @@ public class SCR_manager_main : MonoBehaviour
         display.costText.text = "$" + CalculatePolynominalCost(stat).ToString();
         stat.statCurrent++;
         display.currentStatText.text = (stat.statCurrent).ToString();
+        SCR_master_audio.instance.playRandomEffect("MONEY_SPENT");
     }
     public void BuyWorker()
     {
