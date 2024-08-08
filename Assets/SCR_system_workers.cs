@@ -31,6 +31,7 @@ public partial class SCR_system_workers : SystemBase
         jobHandle.Complete();
 
         if (workerMoveJob.soldResource[0] > 0) SCR_manager_main.instance.Sell(workerMoveJob.soldResource[0]);
+        workerMoveJob.soldResource.Dispose();
     }
 
     [BurstCompile(CompileSynchronously = true)]

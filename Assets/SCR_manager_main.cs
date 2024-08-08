@@ -22,6 +22,7 @@ public class SCR_manager_main : MonoBehaviour
     [SerializeField] private int money;
     [SerializeField] private float deltaTimeModif;
     [SerializeField] private float workerDistanceOffset;
+    [SerializeField] [Tooltip("(In Seconds - E.G. 2 = Two Seconds)")] private float fpsDisplayUpdatePer;
 
     [Header("Stats")]
     [SerializeField] private statStruct worker;
@@ -55,6 +56,17 @@ public class SCR_manager_main : MonoBehaviour
         SCR_manager_ui.instance.GetWorkerSpeedTexts().currentStatText.text = DisplaySpeed();
         SCR_manager_ui.instance.GetWorkerStrengthTexts().currentStatText.text = workerStrength.statCurrent.ToString();
         SCR_manager_ui.instance.UpdateMoneyDisplay(money);
+
+        StartCoroutine(FPSDisplayUpdater());
+    }
+
+    private IEnumerator FPSDisplayUpdater()
+    {
+        while (true)
+        {
+            SCR_manager_ui.instance.UpdateFPSDisplay();
+            yield return new WaitForSeconds(fpsDisplayUpdatePer);
+        }
     }
 
     private string DisplaySpeed()

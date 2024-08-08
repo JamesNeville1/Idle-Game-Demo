@@ -7,7 +7,7 @@ using UnityEngine.UI;
 public class SCR_manager_ui : MonoBehaviour
 {
     [SerializeField] private TextMeshProUGUI moneyDisplay;
-
+    [SerializeField] private TextMeshProUGUI fpsDisplay;
     [System.Serializable] public struct infoPannelTextStruct
     {
         public TextMeshProUGUI costText;
@@ -28,7 +28,10 @@ public class SCR_manager_ui : MonoBehaviour
     {
         moneyDisplay.text = "$" + raw.ToString();
     }
-
+    public void UpdateFPSDisplay()
+    {
+        fpsDisplay.text = "FPS: " + Mathf.Round(1f / Time.unscaledDeltaTime);
+    }
     public infoPannelTextStruct GetWorkerTexts() { return workerText; }
     public infoPannelTextStruct GetWorkerStrengthTexts() { return workerStrengthText; }
     public infoPannelTextStruct GetWorkerSpeedTexts() { return workerSpeedText; }
