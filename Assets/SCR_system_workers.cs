@@ -56,7 +56,7 @@ public partial class SCR_system_workers : SystemBase
                 if (transform.Position.x > sourceX - workerDistanceOffset)
                 {
                     worker.heldItem = carryCap;
-                    //transform.Rotation.value = transform.RotateY(180).Rotation.value;
+                    transform.Rotation.value.y = 1;
                 } 
             } 
 
@@ -69,7 +69,7 @@ public partial class SCR_system_workers : SystemBase
                 {
                     soldResource[0] += worker.heldItem; 
                     worker.heldItem = 0;
-                    //transform.Rotation.value = transform.RotateY(-180).Rotation.value;
+                    transform.Rotation.value.y = 0;
                 }
             }
 

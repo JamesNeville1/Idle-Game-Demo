@@ -54,6 +54,7 @@ public class SCR_manager_main : MonoBehaviour
         SCR_manager_ui.instance.GetWorkerTexts().currentStatText.text = worker.statCurrent.ToString();
         SCR_manager_ui.instance.GetWorkerSpeedTexts().currentStatText.text = DisplaySpeed();
         SCR_manager_ui.instance.GetWorkerStrengthTexts().currentStatText.text = workerStrength.statCurrent.ToString();
+        SCR_manager_ui.instance.UpdateMoneyDisplay(money);
     }
 
     private string DisplaySpeed()
@@ -120,6 +121,7 @@ public class SCR_manager_main : MonoBehaviour
     private void Transaction(SCR_manager_ui.infoPannelTextStruct display, int cost, ref statStruct stat)
     {
         money -= cost;
+        SCR_manager_ui.instance.UpdateMoneyDisplay(money);
         stat.n++;
         display.costText.text = "$" + CalculatePolynominalCost(stat).ToString();
         stat.statCurrent++;
