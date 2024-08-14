@@ -22,12 +22,12 @@ public class SCR_source : MonoBehaviour
 
     private void OnMouseOver()
     {
+        //Simple code allowing the player to manually get money, fairly standard of the genre
         if(Input.GetMouseButtonDown(0) && canManualClick)
         {
             SCR_manager_main.instance.Sell(SCR_manager_main.instance.GetWorkerStrength());
 
             StartCoroutine(ManualClickCooldown());
-            //Play SFX
         }
     }
 

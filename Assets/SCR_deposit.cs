@@ -9,11 +9,4 @@ public class SCR_deposit : MonoBehaviour
     {
         instance = this;
     }
-    public void Give(ref SCR_component_worker worker)
-    {
-        int resource = worker.heldItem;
-        worker.heldItem = 0;
-
-        SCR_manager_main.instance.Sell(resource);
-    }
 }

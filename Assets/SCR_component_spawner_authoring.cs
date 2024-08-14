@@ -5,7 +5,7 @@ using UnityEngine;
 
 public class SCR_component_spawner_authoring : MonoBehaviour
 {
-    public GameObject workerPrefab;
+    public GameObject workerPrefab; // Worker *Game Object*
 
     public class baker : Baker<SCR_component_spawner_authoring>
     {

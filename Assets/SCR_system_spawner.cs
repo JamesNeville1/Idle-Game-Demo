@@ -10,13 +10,14 @@ public partial struct SCR_system_spawner : ISystem
 {
     void OnUpdate(ref SystemState state)
     {
-        if (SCR_manager_main.instance.shouldSpawnWorker)
+        if (SCR_manager_main.instance.shouldSpawnWorker) //Should spawn worker?
         {
-            foreach (var spawner in SystemAPI.Query<RefRO<SCR_component_spawner>>().WithEntityAccess())
+            foreach (var spawner in SystemAPI.Query<RefRO<SCR_component_spawner>>().WithEntityAccess()) //Get spawner
             {
                 var ecb =
                     SystemAPI.GetSingleton<BeginFixedStepSimulationEntityCommandBufferSystem.Singleton>().CreateCommandBuffer(state.WorldUnmanaged);
 
+                //Spawn
                 Entity worker = ecb.Instantiate(spawner.Item1.ValueRO.workerEntity);
                 ecb.SetComponent(worker, new LocalTransform()
                 {
@@ -24,11 +25,10 @@ public partial struct SCR_system_spawner : ISystem
                     Scale = 1,
                     Rotation = new quaternion(0, 0, 0, 1)
                 });
-                //ecb.AddComponent(worker, new URPMaterialPropertyBaseColor { Value = new float4(0, 0, 1, 1) });
-                //ecb.SetComponent(worker, new SpriteRenderer() { color = Color.red });
-                //ecb.AddComponent(worker, new SCR_component_worker_collecting { });
 
                 Debug.Log("Log: Worker Summoned");
+
+                //Only do once
                 SCR_manager_main.instance.shouldSpawnWorker = false;
             }
         }

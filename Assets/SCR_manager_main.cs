@@ -6,6 +6,7 @@ using TMPro;
 using Unity.Entities;
 using Unity.VisualScripting;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class SCR_manager_main : MonoBehaviour
 {
@@ -20,9 +21,9 @@ public class SCR_manager_main : MonoBehaviour
     }
 
     [SerializeField] private int money;
-    [SerializeField] private float deltaTimeModif;
-    [SerializeField] private float workerDistanceOffset;
-    [SerializeField] [Tooltip("(In Seconds - E.G. 2 = Two Seconds)")] private float fpsDisplayUpdatePer;
+    [SerializeField] [Tooltip("Modifer which speeds up game, used for testing")] private float deltaTimeModif;
+    [SerializeField] [Tooltip("How far can a worker be away from buildings")] private float workerDistanceOffset;
+    [SerializeField] [Tooltip("(In seconds - E.G. 2 = two seconds)")] private float fpsDisplayUpdatePer;
 
     [Header("Stats")]
     [SerializeField] private statStruct worker;
@@ -30,19 +31,12 @@ public class SCR_manager_main : MonoBehaviour
     [SerializeField] private float workerSpeedModif;
     [SerializeField] private statStruct workerStrength;
 
-    [Header("World Refs")]
-    [SerializeField] private GameObject workerPrefab;
-    [SerializeField] private Transform haulLineBegin;
-    [SerializeField] private Transform haulLineEnd;
-
     [HideInInspector] public bool shouldSpawnWorker;
 
     public static SCR_manager_main instance;
     private void Awake()
     {
         instance = this;
-
-        //entityManager = World.DefaultGameObjectInjectionWorld.EntityManager;
     }
 
     private void Start()
@@ -52,14 +46,20 @@ public class SCR_manager_main : MonoBehaviour
         DisplayInitialPrice(SCR_manager_ui.instance.GetWorkerSpeedTexts().costText, workerSpeed);
         DisplayInitialPrice(SCR_manager_ui.instance.GetWorkerStrengthTexts().costText, workerStrength);
 
+        //Show stats
         SCR_manager_ui.instance.GetWorkerTexts().currentStatText.text = worker.statCurrent.ToString();
         SCR_manager_ui.instance.GetWorkerSpeedTexts().currentStatText.text = DisplaySpeed();
         SCR_manager_ui.instance.GetWorkerStrengthTexts().currentStatText.text = workerStrength.statCurrent.ToString();
         SCR_manager_ui.instance.UpdateMoneyDisplay(money);
 
+        //Load Audio
+        SceneManager.LoadScene("SCE_audio", LoadSceneMode.Additive);
+
+        //Start FPS Display
         StartCoroutine(FPSDisplayUpdater());
     }
 
+    #region Display Related
     private IEnumerator FPSDisplayUpdater()
     {
         while (true)
@@ -68,7 +68,6 @@ public class SCR_manager_main : MonoBehaviour
             yield return new WaitForSeconds(fpsDisplayUpdatePer);
         }
     }
-
     private string DisplaySpeed()
     {
         float speed = workerSpeed.statCurrent * workerSpeedModif + 1;
@@ -80,7 +79,8 @@ public class SCR_manager_main : MonoBehaviour
         int cost = CalculatePolynominalCost(stat);
         display.text = "$" + cost.ToString();
     }
-
+    #endregion
+    #region "Gets"
     public int GetMoney()
     {
         return money;
@@ -96,13 +96,6 @@ public class SCR_manager_main : MonoBehaviour
         return deltaTimeModif;
     }
 
-    public void Sell(int resource)
-    {
-        money += resource; //Change Later
-        SCR_manager_ui.instance.UpdateMoneyDisplay(money);
-        SCR_master_audio.instance.playRandomEffect("MONEY_MADE");
-    }
-
     public float GetWorkerSpeed()
     {
         return workerSpeed.statCurrent * workerSpeedModif;
@@ -112,34 +105,9 @@ public class SCR_manager_main : MonoBehaviour
     {
         return workerStrength.statCurrent;
     }
-
-    private bool CheckCost(int cost, statStruct stat)
-    {
-        bool atMax = false;
-        if (stat.hasMaxN)
-        {
-            if(stat.n + 1 > stat.maxN) 
-            { 
-                atMax = true;
-            }
-        }
-
-        return (money >= cost && !atMax);
-    }
-    private int CalculatePolynominalCost(statStruct stat) //Add multiplier pram later
-    {
-        return stat.initialPrice + stat.increaseRate * (int)Mathf.Pow(stat.n, 2);
-    }
-    private void Transaction(SCR_manager_ui.infoPannelTextStruct display, int cost, ref statStruct stat)
-    {
-        money -= cost;
-        SCR_manager_ui.instance.UpdateMoneyDisplay(money);
-        stat.n++;
-        display.costText.text = "$" + CalculatePolynominalCost(stat).ToString();
-        stat.statCurrent++;
-        display.currentStatText.text = (stat.statCurrent).ToString();
-        SCR_master_audio.instance.playRandomEffect("MONEY_SPENT");
-    }
+    #endregion
+    #region Main Logic
+    #region Buy "_"
     public void BuyWorker()
     {
         int cost = CalculatePolynominalCost(worker);
@@ -172,4 +140,53 @@ public class SCR_manager_main : MonoBehaviour
             SCR_manager_ui.instance.GetWorkerSpeedTexts().currentStatText.text = DisplaySpeed();
         }
     }
+    #endregion
+    #region Secondary Logic
+    public void Sell(int resource)
+    {
+        money += resource; //Change Later
+        SCR_manager_ui.instance.UpdateMoneyDisplay(money);
+        SCR_manager_audio.instance.PlayRandomEffect("MONEY_MADE");
+    }
+
+    private bool CheckCost(int cost, statStruct stat)
+    {
+        bool atMax = false;
+        if (stat.hasMaxN)
+        {
+            if(stat.n + 1 > stat.maxN) 
+            { 
+                atMax = true;
+            }
+        }
+
+        return (money >= cost && !atMax);
+    }
+    private int CalculatePolynominalCost(statStruct stat) //Add multiplier pram later
+    {
+        return stat.initialPrice + stat.increaseRate * (int)Mathf.Pow(stat.n, 2);
+    }
+    private void Transaction(SCR_manager_ui.infoPannelTextStruct display, int cost, ref statStruct stat)
+    {
+        if(stat.n > stat.maxN && stat.hasMaxN)
+        {
+            display.costText.text = "MAX";
+        }
+
+        money -= cost; //Pay
+
+        SCR_manager_ui.instance.UpdateMoneyDisplay(money); //Money Display
+        
+        //Next Cost Generate
+        stat.n++;
+        stat.statCurrent++;
+
+        //Display Text
+        display.costText.text = "$" + CalculatePolynominalCost(stat).ToString();
+        display.currentStatText.text = (stat.statCurrent).ToString();
+
+        SCR_manager_audio.instance.PlayRandomEffect("MONEY_SPENT"); //SFX
+    }
+    #endregion
+    #endregion
 }

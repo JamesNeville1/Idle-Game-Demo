@@ -1158,7 +1158,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   money: 250
-  deltaTimeModif: 5
+  deltaTimeModif: 1
   workerDistanceOffset: 2.45
   fpsDisplayUpdatePer: 1
   worker:
@@ -1183,9 +1183,6 @@ MonoBehaviour:
     n: 1
     hasMaxN: 0
     maxN: 0
-  workerPrefab: {fileID: 0}
-  haulLineBegin: {fileID: 216449124}
-  haulLineEnd: {fileID: 552143531}
   shouldSpawnWorker: 0
 --- !u!114 &1405234798
 MonoBehaviour:
@@ -1490,6 +1487,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: PRE_deposit
       objectReference: {fileID: 0}
+    - target: {fileID: 5489367327755050385, guid: 71466fbe4dd887844ae76fbf10ef1082, type: 3}
+      propertyPath: m_SortingOrder
+      value: -1
+      objectReference: {fileID: 0}
     - target: {fileID: 8671554556501766983, guid: 71466fbe4dd887844ae76fbf10ef1082, type: 3}
       propertyPath: m_RootOrder
       value: -1
@@ -1663,6 +1664,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 1405234796}
     m_Modifications:
+    - target: {fileID: 2792503094216913581, guid: 00422f5585b82614aa25638d8ed0d58f, type: 3}
+      propertyPath: m_SortingOrder
+      value: -1
+      objectReference: {fileID: 0}
     - target: {fileID: 6241732954512044651, guid: 00422f5585b82614aa25638d8ed0d58f, type: 3}
       propertyPath: m_Name
       value: PRE_source

@@ -19,15 +19,4 @@ public class SCR_component_worker_authoring : MonoBehaviour
 public struct SCR_component_worker : IComponentData
 {
     public int heldItem;
-    //public 
-}
-
-public struct SCR_component_worker_hauling : IComponentData
-{
-
-}
-
-public struct SCR_component_worker_collecting : IComponentData
-{
-
 }

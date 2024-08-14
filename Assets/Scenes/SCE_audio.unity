@@ -261,7 +261,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 1619843631}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 5d2367bb698b5f34fba61c6db36b4ca6, type: 3}
+  m_Script: {fileID: 11500000, guid: dea4a0927d2988047b696f31bc517547, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   sfxs:
@@ -274,8 +274,9 @@ MonoBehaviour:
       - {fileID: 8300000, guid: 32a3c340754a6394b95b3a54ac6ad5c5, type: 3}
     - Key: MONEY_SPENT
       Value:
-      - {fileID: 8300000, guid: de4f6cf634529324495ae2a9b9882bf2, type: 3}
       - {fileID: 8300000, guid: 48a6d2f5e1fef80479561bba7542d12c, type: 3}
-      - {fileID: 8300000, guid: 4fbedc09da934684eaccf616ea3bb757, type: 3}
-      - {fileID: 8300000, guid: dcb4029f36c35c64c8c3da8aff4b3bc2, type: 3}
+      - {fileID: 8300000, guid: de4f6cf634529324495ae2a9b9882bf2, type: 3}
+    - Key: RESOURCE_PICKUP
+      Value:
+      - {fileID: 8300000, guid: 6a3d599bac54b6a40a05505440db3b00, type: 3}
   sfxSource: {fileID: 1619843633}
