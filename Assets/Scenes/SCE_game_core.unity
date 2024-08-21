@@ -1166,23 +1166,23 @@ MonoBehaviour:
     initialPrice: 5
     increaseRate: 5
     n: 1
-    hasMaxN: 0
     maxN: 0
+    nextCost: 0
   workerSpeed:
     statCurrent: 1
     initialPrice: 100
     increaseRate: 2
     n: 6
-    hasMaxN: 1
     maxN: 10
+    nextCost: 0
   workerSpeedModif: 0.75
   workerStrength:
     statCurrent: 5
     initialPrice: 2
     increaseRate: 3
     n: 1
-    hasMaxN: 0
     maxN: 0
+    nextCost: 0
   shouldSpawnWorker: 0
 --- !u!114 &1405234798
 MonoBehaviour:
