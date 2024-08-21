@@ -1,13 +1,11 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
-using System.Drawing;
 using Unity.Burst;
 using Unity.Collections;
 using Unity.Entities;
 using Unity.Jobs;
 using Unity.Mathematics;
-using Unity.Rendering;
 using Unity.Transforms;
 
 [BurstCompile]
@@ -67,6 +65,7 @@ public partial class SCR_system_workers : SystemBase
                     pickedUp[0] = true;
                     worker.heldItem = carryCap;
                     transform.Rotation.value.y = 1;
+                    transform.Position.z = -1f;
                 } 
             } 
 
@@ -80,6 +79,7 @@ public partial class SCR_system_workers : SystemBase
                     soldResource[0] += worker.heldItem; 
                     worker.heldItem = 0;
                     transform.Rotation.value.y = 0;
+                    transform.Position.z = 0;
                 }
             }
         }
