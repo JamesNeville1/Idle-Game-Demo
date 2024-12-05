@@ -14,6 +14,7 @@ public partial struct SCR_system_spawner : ISystem
         {
             foreach (var spawner in SystemAPI.Query<RefRO<SCR_component_spawner>>().WithEntityAccess()) //Get spawner
             {
+                    
                 var ecb =
                     SystemAPI.GetSingleton<BeginFixedStepSimulationEntityCommandBufferSystem.Singleton>().CreateCommandBuffer(state.WorldUnmanaged);
 
