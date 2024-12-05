@@ -26,7 +26,7 @@ public partial struct SCR_system_spawner : ISystem
                     Rotation = new quaternion(0, 0, 0, 1)
                 });
 
-                Debug.Log("Log: Worker Summoned");
+                //Debug.Log("Log: Worker Summoned");
 
                 //Only do once
                 SCR_manager_main.instance.shouldSpawnWorker = false;

@@ -7,6 +7,7 @@ using Unity.Entities;
 using Unity.Jobs;
 using Unity.Mathematics;
 using Unity.Transforms;
+using UnityEngine;
 
 [BurstCompile]
 public partial class SCR_system_workers : SystemBase
@@ -56,6 +57,7 @@ public partial class SCR_system_workers : SystemBase
         public void Execute(ref LocalTransform transform, ref SCR_component_worker worker)
         {
             float3 step = new float3(speed, 0, 0) * deltaTime; //The step of a frame
+
 
             if (worker.heldItem <= 0) //Move Towards Supply
             {

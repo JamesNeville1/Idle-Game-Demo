@@ -65,7 +65,7 @@ public class SCR_manager_main : MonoBehaviour
         while (true)
         {
             SCR_manager_ui.instance.UpdateFPSDisplay();
-            yield return new WaitForSeconds(fpsDisplayUpdatePer);
+            yield return new WaitForSeconds(1f);
         }
     }
     private string DisplaySpeed()
