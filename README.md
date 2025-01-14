@@ -11,7 +11,7 @@ ECS - Entity Component System is a far more optimal, all be it more challenging 
 
 ECS is a data-oriented design, rather than object-oriented like the standard monobehaviour in Unity.
 <br /><br />
-Unity Manual - "The (component) data associated with with your entities, but organized by the data itself rather than by entity."
+Unity Manual - "The (component) data associated with your entities, but organized by the data itself rather than by entity."
 <br /><br />
 
 Here is my use of BurstCompile, which is an attribute that converts your code into fast machine code. I also use IJobEntity which is a way of using multi-threading in Unity. The worker then moves back and forth between the deposit and the source.
